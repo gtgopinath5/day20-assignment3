@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* Custom styles can be added here */
+        body {
+            padding: 20px;
+            background: linear-gradient(to right, red, yellow), linear-gradient(to right, blue, green);
+            background-blend-mode: screen;
+        }
+
+        .brewery-card {
+            margin-bottom: 20px;
+        }
+
+        .card {
+            max-width: 18rem;
+            background-color: #6c757d; /* Secondary color for background */
+            color: #fff; /* Text color */
+        }
+
+        .card-header {
+            background-color: #343a40; /* Header background color */
+            border-bottom: 1px solid #343a40; /* Border color */
+            color: #fff; /* Header text color */
+        }
+        .card-body a {
+            color: lightskyblue; /* Set the website URL color to red */
+        }
+    </style>
+    <title>Brewery App</title>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="mt-4 mb-4" id="one">Breweries</h1>
+    
+    <div id="breweryList" class="row"></div>
+</div>
+
+<script>
+    // Fetch data from the API and display it on the webpage using promises
+    const fetchData = (url) => {
+        return fetch(url).then(response => response.json());
+    };
+
+    const fetchBreweries = () => {
+        fetchData('https://api.openbrewerydb.org/v1/breweries')
+            .then(data => displayBreweries(data))
+            .catch(error => console.error('Error fetching data:', error));
+    };
+
+    // Display breweries on the webpage
+    const displayBreweries = (breweries) => {
+        const breweryListContainer = document.getElementById('breweryList');
+
+        breweries.forEach(brewery => {
+            const breweryCard = document.createElement('div');
+            breweryCard.classList.add('col-md-4', 'brewery-card');
+
+            breweryCard.innerHTML = `
+                <div class="card text-bg-secondary mb-3">
+                    <div class="card-header">${brewery.name}</div>
+                    <div class="card-body">
+                        <p class="card-text">Country: ${brewery.country}</p>
+                        <p class="card-text">${brewery.city}, ${brewery.state}</p>
+                        <p class="card-text">Website: <a href="${brewery.website_url}" target="_blank">${brewery.website_url}</a></p>
+                        <p class="card-text">Phone: ${brewery.phone}</p>
+                        <h5 class="card-title">${brewery.brewery_type}</h5>
+                    </div>
+                </div>
+            `;
+
+            breweryListContainer.appendChild(breweryCard);
+        });
+    };
+
+    // Call the fetchBreweries function when the page is loaded
+    window.addEventListener('load', fetchBreweries);
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
